@@ -1,8 +1,13 @@
 
 
 from django.contrib import admin
-from django.urls import path
+from django.urls import path,include
 from tickets import views
+from rest_framework.routers import DefaultRouter
+router = DefaultRouter()
+router.register('guests',views.viewsets_guest) 
+router.register('movie',views.viewsets_movie) 
+router.register('reservation',views.viewsets_reservation) 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -16,7 +21,9 @@ urlpatterns = [
     path('rest/mixins/<int:pk>',views.mixins_pk.as_view()),
     path('rest/guests/', views.GuestList.as_view(), name='guest-list'),
     path('rest/guests/<int:pk>',views.GuestDetail.as_view(), name='guest-detail'),
-    
-    
+    path('rest/viewsets/',include(router.urls)),
+    path('fbv/findmovie/',views.find_movie),
+    path('fbv/newreservation',views.new_reservation),
+
 
 ]

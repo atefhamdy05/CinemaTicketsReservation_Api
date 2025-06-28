@@ -1,11 +1,7 @@
 from django.db import models
 class Movie(models.Model):
     name = models.CharField(max_length=50)
-    hall = models.CharField(max_length=50)
-    Date = models.DateField()
-    
-    
-   
+    hall = models.CharField(max_length=50) 
     
 class Guest(models.Model):
     name = models.CharField(max_length=50)

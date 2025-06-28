@@ -7,7 +7,7 @@ from .serializers import GuestSerializer,MovieSerializer,ReservationSerializer
 from rest_framework import status,filters
 from rest_framework.views import APIView
 from django.http import Http404
-from rest_framework import generics, mixins
+from rest_framework import generics, mixins,viewsets
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 def no_rest_no_model(request):
             guests = [
@@ -139,11 +139,46 @@ class GuestList(ListCreateAPIView):
 class GuestDetail(RetrieveUpdateDestroyAPIView):
     queryset = Guest.objects.all()
     serializer_class = GuestSerializer
+        
     
+class viewsets_guest(viewsets.ModelViewSet):
+    queryset = Guest.objects.all()
+    serializer_class = GuestSerializer
     
-    
-    
-    
+class viewsets_movie(viewsets.ModelViewSet):
+    queryset = Movie.objects.all()
+    serializer_class = MovieSerializer
+
+
+class viewsets_reservation(viewsets.ModelViewSet):
+    queryset = Reservation.objects.all()
+    serializer_class = ReservationSerializer
+
+@api_view(['GET'])
+def find_movie(request):
+    movies = Movie.objects.filter(
+        hall = request.data['hall'],
+        name = request.data['name']
+    )
+    serializer = MovieSerializer(movies,many = True)
+    return  Response(serializer.data)
+
+@api_view(['POST'])
+def new_reservation(request):
+     movie = Movie.objects.get(
+        hall = request.data['hall'],
+        name = request.data['name'],
+    )
+     guest = Guest()
+     guest.name = request.data['name']
+     guest.mobile=request.data['mobile']
+     guest.save()
+     
+     reservation = Reservation()
+     reservation.guest = guest
+     reservation.movie = movie
+     reservation.save()
+     return Response(status=status.HTTP_201_CREATED)
     
     
     
